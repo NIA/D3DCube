@@ -193,19 +193,11 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\Cube.ico"
-				>
-			</File>
-			<File
 				RelativePath=".\Cube.rc"
 				>
 			</File>
 			<File
 				RelativePath=".\directx.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\small.ico"
 				>
 			</File>
 		</Filter>

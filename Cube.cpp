@@ -9,9 +9,11 @@
 //-----------------------------------------------------------------------------
 // Global variables
 //-----------------------------------------------------------------------------
-LPDIRECT3D9             g_pD3D = NULL; // Used to create the D3DDevice
-LPDIRECT3DDEVICE9       g_pd3dDevice = NULL; // Our rendering device
-LPDIRECT3DVERTEXBUFFER9 g_pVB = NULL; // Buffer to hold vertices
+LPDIRECT3D9                  g_pD3D = NULL; // Used to create the D3DDevice
+LPDIRECT3DDEVICE9            g_pd3dDevice = NULL; // Our rendering device
+LPDIRECT3DVERTEXBUFFER9      g_pVB = NULL; // Buffer to hold vertices
+LPDIRECT3DINDEXBUFFER9       g_pIB = NULL; // Buffer to hold indices
+LPDIRECT3DVERTEXDECLARATION9 g_pDecl = NULL; // Vertex declaration
 
 // A structure for our custom vertex type
 struct CUSTOMVERTEX
@@ -52,7 +54,17 @@ HRESULT InitD3D( HWND hWnd )
     }
 
     // Device state would normally be set here
-
+    
+    g_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+	
+	D3DVERTEXELEMENT9 vertexDeclaration[] =
+	{
+		{0, 0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+		{0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+		D3DDECL_END()
+	};
+	g_pd3dDevice->CreateVertexDeclaration(vertexDeclaration, &g_pDecl);
+	g_pd3dDevice->SetVertexDeclaration(g_pDecl);
     return S_OK;
 }
 
@@ -71,40 +83,53 @@ HRESULT InitD3D( HWND hWnd )
 //-----------------------------------------------------------------------------
 HRESULT InitVB()
 {
-    // Initialize three vertices for rendering a triangle
     CUSTOMVERTEX vertices[] =
     {
-        {  50.0f, 50.0f,  1.5f, 1.0f, D3DCOLOR_XRGB(255,0,0), }, // x, y, z, rhw, color
-        { 250.0f, 50.0f,  1.5f, 1.0f, D3DCOLOR_XRGB(0,255,0), },
-        {  50.0f, 250.0f, 1.5f, 1.0f, D3DCOLOR_XRGB(0,255,255), },
-
-        {  50.0f, 250.0f, 1.5f, 1.0f, D3DCOLOR_XRGB(0,255,255), },
-        { 250.0f,  50.0f, 1.5f, 1.0f, D3DCOLOR_XRGB(0,255,0), },
-        { 250.0f, 250.0f, 1.5f, 1.0f, D3DCOLOR_XRGB(255,255,0), },
+        {  50.0f, 50.0f,  0.5f, 1.0f, D3DCOLOR_XRGB(255,0,0), }, // x, y, z, rhw, color
+        {  50.0f, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0,255,255), },
+        { 250.0f, 50.0f,  0.5f, 1.0f, D3DCOLOR_XRGB(0,255,0), },
+        { 250.0f, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,0), },  // - a square
 
 	    {  10.0f, 100.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
-        { 300.0f,  40.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
-        { 230.0f, 80.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
+        { 300.0f,  40.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), }, // - a triangle
+        { 230.0f,  80.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
 	};
+	
+	DWORD indices[] =
+	{
+		0, 1, 2, //  
+		2, 1, 3, //  - a square
+		4, 5, 6, // - a triangle
+	};
+	
 
-    // Create the vertex buffer. Here we are allocating enough memory
-    // (from the default pool) to hold all our 3 custom vertices. We also
-    // specify the FVF, so the vertex buffer knows what data it contains.
     if( FAILED( g_pd3dDevice->CreateVertexBuffer( sizeof(vertices) /*5 * sizeof( CUSTOMVERTEX )*/,
                                                   0, D3DFVF_CUSTOMVERTEX,
                                                   D3DPOOL_DEFAULT, &g_pVB, NULL ) ) )
     {
         return E_FAIL;
     }
+	
+	if ( FAILED( g_pd3dDevice->CreateIndexBuffer( sizeof(indices),
+												  0, D3DFMT_INDEX32,
+												  D3DPOOL_DEFAULT, &g_pIB, NULL ) ) )
+    {
+        return E_FAIL;
+    }
 
-    // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-    // gain access to the vertices. This mechanism is required becuase vertex
-    // buffers may be in device memory.
+    // fill the vertex buffer.
     VOID* pVertices;
     if( FAILED( g_pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) ) )
         return E_FAIL;
     memcpy( pVertices, vertices, sizeof( vertices ) );
     g_pVB->Unlock();
+
+    // fill the index buffer.
+	VOID* pIndices;
+    if( FAILED( g_pIB->Lock( 0, sizeof( indices ), ( void** )&pIndices, 0 ) ) )
+        return E_FAIL;
+    memcpy( pVertices, vertices, sizeof( indices ) );
+    g_pIB->Unlock();
 
     return S_OK;
 }
@@ -118,6 +143,12 @@ HRESULT InitVB()
 //-----------------------------------------------------------------------------
 VOID Cleanup()
 {
+	if( g_pDecl != NULL )
+        g_pDecl->Release();
+
+    if( g_pIB != NULL )
+        g_pIB->Release();
+
     if( g_pVB != NULL )
         g_pVB->Release();
 
@@ -143,18 +174,13 @@ VOID Render()
     // Begin the scene
     if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
     {
-        // Draw the triangles in the vertex buffer. This is broken into a few
-        // steps. We are passing the vertices down a "stream", so first we need
-        // to specify the source of that stream, which is our vertex buffer. Then
-        // we need to let D3D know what vertex shader to use. Full, custom vertex
-        // shaders are an advanced topic, but in most cases the vertex shader is
-        // just the FVF, so that D3D knows what type of vertices we are dealing
-        // with. Finally, we call DrawPrimitive() which does the actual rendering
-        // of our geometry (in this case, just one triangle).
         g_pd3dDevice->SetStreamSource( 0, g_pVB, 0, sizeof( CUSTOMVERTEX ) );
         g_pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-        g_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLELIST , 0, 6 );
-
+        // g_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLELIST , 0, 1 );
+        g_pd3dDevice->SetIndices(g_pIB);
+        if( FAILED ( g_pd3dDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST , 0, 0, 3, 0, 1 ) ))
+			throw "BOOM!";
+ 
         // End the scene
         g_pd3dDevice->EndScene();
     }
@@ -192,6 +218,7 @@ LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 //-----------------------------------------------------------------------------
 INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 {
+	bool success = true;
     // Register the window class
     WNDCLASSEX wc =
     {
@@ -230,8 +257,19 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
                     Render();
             }
         }
+		else
+		{
+			success = false;
+		}
     }
+	else
+	{
+		success = false;
+	}
 
     UnregisterClass( L"D3D Tutorial", wc.hInstance );
-    return 0;
+	if(success)
+		return 0;
+	else
+		return 1;
 }
