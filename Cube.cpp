@@ -4,6 +4,13 @@
 #pragma warning( default : 4996 )
 
 
+#ifdef NDEBUG
+#define CHECK(expr) do { if (FAILED(expr)) throw #expr; } while(0)
+#else // #ifdef NDEBUG
+#define CHECK(expr) expr
+#endif // #ifdef NDEBUG
+
+#define CHECK_OR_DO(code, expr) do {if (FAILED(expr)) {code;}} while(0)
 
 
 //-----------------------------------------------------------------------------
@@ -44,14 +51,12 @@ HRESULT InitD3D( HWND hWnd )
     d3dpp.Windowed = TRUE;
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
-
     // Create the D3DDevice
-    if( FAILED( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
-                                      D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                      &d3dpp, &g_pd3dDevice ) ) )
-    {
-        return E_FAIL;
-    }
+    CHECK_OR_DO(return E_FAIL, g_pD3D->CreateDevice(
+									D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+                                    D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                    &d3dpp, &g_pd3dDevice ) );
+				
 
     // Device state would normally be set here
     
@@ -103,32 +108,27 @@ HRESULT InitVB()
 	};
 	
 
-    if( FAILED( g_pd3dDevice->CreateVertexBuffer( sizeof(vertices) /*5 * sizeof( CUSTOMVERTEX )*/,
-                                                  0, D3DFVF_CUSTOMVERTEX,
-                                                  D3DPOOL_DEFAULT, &g_pVB, NULL ) ) )
-    {
-        return E_FAIL;
-    }
+    CHECK_OR_DO(return E_FAIL, g_pd3dDevice->CreateVertexBuffer(
+												sizeof(vertices) /*5 * sizeof( CUSTOMVERTEX )*/,
+                                                0, D3DFVF_CUSTOMVERTEX,
+                                                D3DPOOL_DEFAULT, &g_pVB, NULL ) );
 	
-	if ( FAILED( g_pd3dDevice->CreateIndexBuffer( sizeof(indices),
-												  0, D3DFMT_INDEX32,
-												  D3DPOOL_DEFAULT, &g_pIB, NULL ) ) )
-    {
-        return E_FAIL;
-    }
+
+    CHECK_OR_DO(return E_FAIL, g_pd3dDevice->CreateIndexBuffer( sizeof(indices),
+												 0, D3DFMT_INDEX32,
+												 D3DPOOL_DEFAULT, &g_pIB, NULL ) );
+				
 
     // fill the vertex buffer.
     VOID* pVertices;
-    if( FAILED( g_pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) ) )
-        return E_FAIL;
+    CHECK_OR_DO(return E_FAIL, g_pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) );
     memcpy( pVertices, vertices, sizeof( vertices ) );
     g_pVB->Unlock();
 
     // fill the index buffer.
 	VOID* pIndices;
-    if( FAILED( g_pIB->Lock( 0, sizeof( indices ), ( void** )&pIndices, 0 ) ) )
-        return E_FAIL;
-    memcpy( pVertices, vertices, sizeof( indices ) );
+    CHECK_OR_DO(return E_FAIL, g_pIB->Lock( 0, sizeof( indices ), ( void** )&pIndices, 0 ) );
+    memcpy( pIndices, indices, sizeof( indices ) );
     g_pIB->Unlock();
 
     return S_OK;
@@ -174,15 +174,14 @@ VOID Render()
     // Begin the scene
     if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
     {
-        g_pd3dDevice->SetStreamSource( 0, g_pVB, 0, sizeof( CUSTOMVERTEX ) );
-        g_pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-        // g_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLELIST , 0, 1 );
-        g_pd3dDevice->SetIndices(g_pIB);
-        if( FAILED ( g_pd3dDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST , 0, 0, 3, 0, 1 ) ))
-			throw "BOOM!";
+        CHECK( g_pd3dDevice->SetStreamSource( 0, g_pVB, 0, sizeof( CUSTOMVERTEX ) ) );
+        CHECK( g_pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX ) );
+        CHECK( g_pd3dDevice->SetIndices(g_pIB) );
+        //CHECK( g_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLELIST , 0, 1 ) );
+		CHECK( g_pd3dDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST , 0, 0, 7, 0, 3 ) );
  
         // End the scene
-        g_pd3dDevice->EndScene();
+        CHECK( g_pd3dDevice->EndScene() );
     }
 
     // Present the backbuffer contents to the display
