@@ -51,6 +51,8 @@ HRESULT InitD3D( HWND hWnd )
     d3dpp.Windowed = TRUE;
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+    d3dpp.EnableAutoDepthStencil = TRUE;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
     // Create the D3DDevice
     CHECK_OR_DO(return E_FAIL, g_pD3D->CreateDevice(
 									D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
@@ -95,9 +97,9 @@ HRESULT InitVB()
         { 250.0f, 50.0f,  0.5f, 1.0f, D3DCOLOR_XRGB(0,255,0), },
         { 250.0f, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,0), },  // - a square
 
-	    {  10.0f, 100.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
-        { 300.0f,  40.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), }, // - a triangle
-        { 230.0f,  80.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
+	    {  10.0f, 100.0f, 0.8f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
+        { 300.0f,  40.0f, 0.1f, 1.0f, D3DCOLOR_XRGB(255,255,255), }, // - a triangle
+        { 230.0f,  80.0f, 0.8f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
 	};
 	
 	DWORD indices[] =
