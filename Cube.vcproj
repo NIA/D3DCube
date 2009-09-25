@@ -177,6 +177,10 @@
 				RelativePath=".\Cube.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\shader.vsh"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"

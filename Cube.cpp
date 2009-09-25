@@ -1,4 +1,5 @@
 #include <d3d9.h>
+#include <d3dx9.h>
 #pragma warning( disable : 4996 ) // disable deprecated warning 
 #include <strsafe.h>
 #pragma warning( default : 4996 )
@@ -11,6 +12,7 @@
 #endif // #ifdef NDEBUG
 
 #define CHECK_OR_DO(code, expr) do {if (FAILED(expr)) {code;}} while(0)
+#define CHECK_OR_FAIL(expr) CHECK_OR_DO(return E_FAIL, expr)
 
 
 //-----------------------------------------------------------------------------
@@ -21,6 +23,7 @@ LPDIRECT3DDEVICE9            g_pd3dDevice = NULL; // Our rendering device
 LPDIRECT3DVERTEXBUFFER9      g_pVB = NULL; // Buffer to hold vertices
 LPDIRECT3DINDEXBUFFER9       g_pIB = NULL; // Buffer to hold indices
 LPDIRECT3DVERTEXDECLARATION9 g_pDecl = NULL; // Vertex declaration
+LPDIRECT3DVERTEXSHADER9		 g_pVSh = NULL; // Vertex shader
 
 // A structure for our custom vertex type
 struct CUSTOMVERTEX
@@ -54,24 +57,15 @@ HRESULT InitD3D( HWND hWnd )
     d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
     // Create the D3DDevice
-    CHECK_OR_DO(return E_FAIL, g_pD3D->CreateDevice(
-									D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
-                                    D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                    &d3dpp, &g_pd3dDevice ) );
+    CHECK_OR_FAIL( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+										 D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+										 &d3dpp, &g_pd3dDevice ) );
 				
 
     // Device state would normally be set here
     
     g_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 	
-	D3DVERTEXELEMENT9 vertexDeclaration[] =
-	{
-		{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
-		{0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
-		D3DDECL_END()
-	};
-	g_pd3dDevice->CreateVertexDeclaration(vertexDeclaration, &g_pDecl);
-	g_pd3dDevice->SetVertexDeclaration(g_pDecl);
     return S_OK;
 }
 
@@ -99,7 +93,7 @@ HRESULT InitVB()
 
 	    { -0.7f,  0.4f, 0.8f, D3DCOLOR_XRGB(255,255,255), },
         {  0.2f,  0.2f, 0.1f, D3DCOLOR_XRGB(255,255,255), }, // - a triangle
-        {  0.3f,  0.0f, 0.8f, D3DCOLOR_XRGB(255,255,255), },
+        {  0.3f,  0.0f, 0.2f, D3DCOLOR_XRGB(255,255,255), },
 	};
 	
 	DWORD indices[] =
@@ -110,32 +104,47 @@ HRESULT InitVB()
 	};
 	
 
-    CHECK_OR_DO(return E_FAIL, g_pd3dDevice->CreateVertexBuffer(
-												sizeof(vertices) /*5 * sizeof( CUSTOMVERTEX )*/,
-                                                0, D3DFVF_CUSTOMVERTEX,
-                                                D3DPOOL_DEFAULT, &g_pVB, NULL ) );
+    CHECK_OR_FAIL( g_pd3dDevice->CreateVertexBuffer( sizeof(vertices),
+													0, D3DFVF_CUSTOMVERTEX,
+													D3DPOOL_DEFAULT, &g_pVB, NULL ) );
 	
 
-    CHECK_OR_DO(return E_FAIL, g_pd3dDevice->CreateIndexBuffer( sizeof(indices),
-												 0, D3DFMT_INDEX32,
-												 D3DPOOL_DEFAULT, &g_pIB, NULL ) );
+    CHECK_OR_FAIL( g_pd3dDevice->CreateIndexBuffer(  sizeof(indices),
+													0, D3DFMT_INDEX32,
+													D3DPOOL_DEFAULT, &g_pIB, NULL ) );
 				
 
     // fill the vertex buffer.
     VOID* pVertices;
-    CHECK_OR_DO(return E_FAIL, g_pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) );
+    CHECK_OR_FAIL( g_pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) );
     memcpy( pVertices, vertices, sizeof( vertices ) );
     g_pVB->Unlock();
 
     // fill the index buffer.
 	VOID* pIndices;
-    CHECK_OR_DO(return E_FAIL, g_pIB->Lock( 0, sizeof( indices ), ( void** )&pIndices, 0 ) );
+    CHECK_OR_FAIL( g_pIB->Lock( 0, sizeof( indices ), ( void** )&pIndices, 0 ) );
     memcpy( pIndices, indices, sizeof( indices ) );
     g_pIB->Unlock();
 
     return S_OK;
 }
 
+HRESULT InitVSh()
+{
+	D3DVERTEXELEMENT9 vertexDeclaration[] =
+	{
+		{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+		{0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+		D3DDECL_END()
+	};
+	CHECK_OR_FAIL( g_pd3dDevice->CreateVertexDeclaration(vertexDeclaration, &g_pDecl) );
+
+	LPD3DXBUFFER shader_buffer = NULL;
+	CHECK_OR_FAIL( D3DXAssembleShaderFromFileA("shader.vsh", NULL, NULL, NULL, &shader_buffer, NULL) );
+	CHECK_OR_FAIL( g_pd3dDevice->CreateVertexShader((DWORD*) shader_buffer->GetBufferPointer(), &g_pVSh) );
+
+	return S_OK;
+}
 
 
 
@@ -145,6 +154,9 @@ HRESULT InitVB()
 //-----------------------------------------------------------------------------
 VOID Cleanup()
 {
+	if( g_pVSh != NULL )
+        g_pVSh->Release();
+
 	if( g_pDecl != NULL )
         g_pDecl->Release();
 
@@ -177,8 +189,9 @@ VOID Render()
     if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
     {
         CHECK( g_pd3dDevice->SetStreamSource( 0, g_pVB, 0, sizeof( CUSTOMVERTEX ) ) );
-        CHECK( g_pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX ) );
         CHECK( g_pd3dDevice->SetIndices(g_pIB) );
+		CHECK( g_pd3dDevice->SetVertexDeclaration(g_pDecl) );
+		CHECK( g_pd3dDevice->SetVertexShader(g_pVSh) );
         //CHECK( g_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLELIST , 0, 1 ) );
 		CHECK( g_pd3dDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST , 0, 0, 7, 0, 3 ) );
  
@@ -231,7 +244,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
     // Create the application's window
     HWND hWnd = CreateWindow( L"Cube", L"Cube",
-                              WS_OVERLAPPEDWINDOW, 100, 100, 400, 300,
+                              WS_OVERLAPPEDWINDOW, 100, 100, 300, 300,
                               NULL, NULL, wc.hInstance, NULL );
 
     // Initialize Direct3D
@@ -240,23 +253,31 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
         // Create the vertex buffer
         if( SUCCEEDED( InitVB() ) )
         {
-            // Show the window
-            ShowWindow( hWnd, SW_SHOWDEFAULT );
-            UpdateWindow( hWnd );
+			// Create the vertex shader
+			if( SUCCEEDED( InitVSh() ) )
+			{
+				// Show the window
+				ShowWindow( hWnd, SW_SHOWDEFAULT );
+				UpdateWindow( hWnd );
 
-            // Enter the message loop
-            MSG msg;
-            ZeroMemory( &msg, sizeof( msg ) );
-            while( msg.message != WM_QUIT )
-            {
-                if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
-                {
-                    TranslateMessage( &msg );
-                    DispatchMessage( &msg );
-                }
-                else
-                    Render();
-            }
+				// Enter the message loop
+				MSG msg;
+				ZeroMemory( &msg, sizeof( msg ) );
+				while( msg.message != WM_QUIT )
+				{
+					if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+					{
+						TranslateMessage( &msg );
+						DispatchMessage( &msg );
+					}
+					else
+						Render();
+				}
+			}
+			else
+			{
+				success = false;
+			}
         }
 		else
 		{
