@@ -1,38 +1,16 @@
 #pragma once
 #include <exception>
 
-class RuntimeError : public std::exception
-{
-public:
-    virtual const char *what() const { return "Runtime error!"; }
-};
+#define DECLARE_ERROR(Error, Base, msg) \
+    class Error : public Base \
+    { \
+    public: \
+        virtual const char *what() const { return msg; } \
+    }
 
-class WindowInitError : public RuntimeError
-{
-public:
-    virtual const char *what() const { return "Error while creating window"; }
-};
-
-class D3DInitError : public RuntimeError 
-{
-public:
-    virtual const char *what() const { return "Error while initializing D3D device"; }
-};
-
-class VertexDeclarationInitError : public RuntimeError 
-{
-public:
-    virtual const char *what() const { return "Error while creating vertex declaration"; }
-};
-
-class VertexShaderAssemblyError : public RuntimeError 
-{
-public:
-    virtual const char *what() const { return "Error while assembling vertex shader"; }
-};
-
-class VertexShaderInitError : public RuntimeError 
-{
-public:
-    virtual const char *what() const { return "Error while creating vertex shader"; }
-};
+DECLARE_ERROR(RuntimeError, std::exception, "Runtime Error!");
+DECLARE_ERROR(WindowInitError, RuntimeError, "Error while creating window");
+DECLARE_ERROR(D3DInitError, RuntimeError, "Error while initializing D3D device");
+DECLARE_ERROR(VertexDeclarationInitError, RuntimeError, "Error while creating vertex declaration");
+DECLARE_ERROR(VertexShaderAssemblyError, RuntimeError, "Error while assembling vertex shader");
+DECLARE_ERROR(VertexShaderInitError, RuntimeError, "Error while creating vertex shader");
