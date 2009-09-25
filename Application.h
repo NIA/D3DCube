@@ -3,6 +3,8 @@
 #include "Camera.h"
 #include "Window.h"
 
+#define SHADER_FILE "shader.vsh"
+
 class Application
 {
 private:
@@ -12,6 +14,7 @@ private:
     IDirect3DVertexShader9		*shader;        // vertex shader
 
     Window window;
+
     // Initialization steps:
     void init_device();
     void init_shader();

@@ -49,7 +49,7 @@ void Application::init_shader()
         throw VertexDeclarationInitError();
 
 	ID3DXBuffer * shader_buffer = NULL;
-	if( FAILED( D3DXAssembleShaderFromFileA( "shader.vsh", NULL, NULL, NULL, &shader_buffer, NULL ) ) )
+	if( FAILED( D3DXAssembleShaderFromFileA( SHADER_FILE, NULL, NULL, NULL, &shader_buffer, NULL ) ) )
         throw VertexShaderAssemblyError();
 	if( FAILED( device->CreateVertexShader( (DWORD*) shader_buffer->GetBufferPointer(), &shader ) ) )
         throw VertexShaderInitError();
