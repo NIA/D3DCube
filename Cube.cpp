@@ -25,12 +25,12 @@ LPDIRECT3DVERTEXDECLARATION9 g_pDecl = NULL; // Vertex declaration
 // A structure for our custom vertex type
 struct CUSTOMVERTEX
 {
-    FLOAT x, y, z, rhw; // The transformed position for the vertex
-    DWORD color;        // The vertex color
+    FLOAT x, y, z; // The position for the vertex
+    DWORD color;   // The vertex color
 };
 
 // Our custom FVF, which describes our custom vertex structure
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW|D3DFVF_DIFFUSE)
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE)
 
 
 
@@ -66,8 +66,8 @@ HRESULT InitD3D( HWND hWnd )
 	
 	D3DVERTEXELEMENT9 vertexDeclaration[] =
 	{
-		{0, 0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
-		{0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+		{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+		{0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
 		D3DDECL_END()
 	};
 	g_pd3dDevice->CreateVertexDeclaration(vertexDeclaration, &g_pDecl);
@@ -92,14 +92,14 @@ HRESULT InitVB()
 {
     CUSTOMVERTEX vertices[] =
     {
-        {  50.0f, 50.0f,  0.5f, 1.0f, D3DCOLOR_XRGB(255,0,0), }, // x, y, z, rhw, color
-        {  50.0f, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0,255,255), },
-        { 250.0f, 50.0f,  0.5f, 1.0f, D3DCOLOR_XRGB(0,255,0), },
-        { 250.0f, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255,255,0), },  // - a square
+        { -0.5f, -0.5f, 0.5f, D3DCOLOR_XRGB(255,0,0), }, // x, y, z, color
+        {  0.5f, -0.5f, 0.5f, D3DCOLOR_XRGB(0,255,255), },
+        { -0.5f,  0.5f, 0.5f, D3DCOLOR_XRGB(0,255,0), },
+        {  0.5f,  0.5f, 0.5f, D3DCOLOR_XRGB(255,255,0), },  // - a square
 
-	    {  10.0f, 100.0f, 0.8f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
-        { 300.0f,  40.0f, 0.1f, 1.0f, D3DCOLOR_XRGB(255,255,255), }, // - a triangle
-        { 230.0f,  80.0f, 0.8f, 1.0f, D3DCOLOR_XRGB(255,255,255), },
+	    { -0.7f,  0.4f, 0.8f, D3DCOLOR_XRGB(255,255,255), },
+        {  0.2f,  0.2f, 0.1f, D3DCOLOR_XRGB(255,255,255), }, // - a triangle
+        {  0.3f,  0.0f, 0.8f, D3DCOLOR_XRGB(255,255,255), },
 	};
 	
 	DWORD indices[] =
