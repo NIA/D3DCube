@@ -174,11 +174,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Cube.cpp"
+				RelativePath=".\Application.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\main.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\shader.vsh"
+				>
+			</File>
+			<File
+				RelativePath=".\Window.cpp"
 				>
 			</File>
 		</Filter>
@@ -188,7 +196,23 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\Application.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Error.h"
+				>
+			</File>
+			<File
+				RelativePath=".\main.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Window.h"
 				>
 			</File>
 		</Filter>
