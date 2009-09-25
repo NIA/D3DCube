@@ -170,8 +170,8 @@ VOID Cleanup()
 //-----------------------------------------------------------------------------
 VOID Render()
 {
-    // Clear the backbuffer to a blue color
-    g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( 0, 0, 255 ), 1.0f, 0 );
+    // Clear the backbuffer to a gray color, and clear z-buffer
+    g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 128, 128, 128 ), 1.0f, 0 );
 
     // Begin the scene
     if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
