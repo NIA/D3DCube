@@ -24,6 +24,8 @@ private:
 
     std::list<Model*> models;
 
+    Camera camera;
+
     // Initialization steps:
     void init_device();
     void init_shader();

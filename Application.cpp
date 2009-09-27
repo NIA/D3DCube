@@ -1,7 +1,7 @@
 #include "Application.h"
 
 Application::Application() :
-    d3d(NULL), device(NULL), vertex_decl(NULL), shader(NULL)
+    d3d(NULL), device(NULL), vertex_decl(NULL), shader(NULL), camera(0, 0, -1.0f)
 {
     try
     {
@@ -68,12 +68,17 @@ void Application::render()
     {
         device->SetVertexDeclaration(vertex_decl);
         device->SetVertexShader(shader);
+        device->SetVertexShaderConstantF(0, camera.get_matrix(), 4);
 
-        for ( std::list<Model*>::iterator iter = models.begin(); iter != models.end( ); iter++ )
+        for ( std::list<Model*>::iterator iter = models.begin(); iter != models.end(); iter++ )
             (*iter)->draw();
 
         // End the scene
         device->EndScene();
+    }
+    else
+    {
+        /* throw ...; */
     }
 
     // Present the backbuffer contents to the display

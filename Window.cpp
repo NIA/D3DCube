@@ -13,7 +13,7 @@ Window::Window()
     RegisterClassEx( &wc );
 
     hwnd = CreateWindow( WND_CLASS, L"Cube",
-                           WS_OVERLAPPEDWINDOW, 100, 100, 300, 300,
+                           WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
                            NULL, NULL, wc.hInstance, NULL );
     if( hwnd == NULL )
     {
