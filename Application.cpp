@@ -39,20 +39,24 @@ void Application::init_device()
 
 void Application::init_shader()
 {
-	D3DVERTEXELEMENT9 vertex_decl_array[] =
-	{
-		{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
-		{0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
-		D3DDECL_END()
-	};
-	if( FAILED( device->CreateVertexDeclaration(vertex_decl_array, &vertex_decl) ) )
+    if( FAILED( device->CreateVertexDeclaration(VERTEX_DECL_ARRAY, &vertex_decl) ) )
         throw VertexDeclarationInitError();
 
-	ID3DXBuffer * shader_buffer = NULL;
-	if( FAILED( D3DXAssembleShaderFromFileA( SHADER_FILE, NULL, NULL, NULL, &shader_buffer, NULL ) ) )
-        throw VertexShaderAssemblyError();
-	if( FAILED( device->CreateVertexShader( (DWORD*) shader_buffer->GetBufferPointer(), &shader ) ) )
-        throw VertexShaderInitError();
+    ID3DXBuffer * shader_buffer = NULL;
+    try
+    {
+        if( FAILED( D3DXAssembleShaderFromFileA( SHADER_FILE, NULL, NULL, NULL, &shader_buffer, NULL ) ) )
+            throw VertexShaderAssemblyError();
+        if( FAILED( device->CreateVertexShader( (DWORD*) shader_buffer->GetBufferPointer(), &shader ) ) )
+            throw VertexShaderInitError();
+    }
+    catch(...)
+    {
+        release_interface(shader_buffer);
+        throw;
+    }
+    release_interface(shader_buffer);
+    
 }
 
 void Application::render()
@@ -62,14 +66,12 @@ void Application::render()
     // Begin the scene
     if( SUCCEEDED( device->BeginScene() ) )
     {
-		device->SetVertexDeclaration(vertex_decl);
+        device->SetVertexDeclaration(vertex_decl);
         device->SetVertexShader(shader);
 
-        // TODO: Here we call draw() at each model
-        // device->SetStreamSource( 0, g_pVB, 0, sizeof( CUSTOMVERTEX ) );
-        // device->SetIndices(g_pIB);
-		// device->DrawIndexedPrimitive( D3DPT_TRIANGLELIST , 0, 0, 7, 0, 3 );
- 
+        for ( std::list<Model*>::iterator iter = models.begin(); iter != models.end( ); iter++ )
+            (*iter)->draw();
+
         // End the scene
         device->EndScene();
     }
@@ -79,24 +81,39 @@ void Application::render()
 
 }
 
+IDirect3DDevice9 * Application::get_device()
+{
+    return device;
+}
+
+void Application::add_model(Model &model)
+{
+    models.push_back( &model );
+}
+
+void Application::remove_model(Model &model)
+{
+    models.remove( &model );
+}
+
 void Application::run()
 {
-	window.show();
+    window.show();
     window.update();
 
-	// Enter the message loop
-	MSG msg;
-	ZeroMemory( &msg, sizeof( msg ) );
-	while( msg.message != WM_QUIT )
-	{
-		if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
-		{
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
-		}
-		else
-			render();
-	}
+    // Enter the message loop
+    MSG msg;
+    ZeroMemory( &msg, sizeof( msg ) );
+    while( msg.message != WM_QUIT )
+    {
+        if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+        {
+            TranslateMessage( &msg );
+            DispatchMessage( &msg );
+        }
+        else
+            render();
+    }
 }
 
 void Application::release_interfaces()

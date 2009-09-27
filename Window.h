@@ -17,7 +17,7 @@ public:
     void update();
     static LRESULT WINAPI MsgProc( HWND, UINT, WPARAM, LPARAM );
 
-	inline operator HWND() { return this->hwnd; }
-	inline operator HWND() const { return this->hwnd; }
+    inline operator HWND() { return this->hwnd; }
+    inline operator HWND() const { return this->hwnd; }
     ~Window();
 };

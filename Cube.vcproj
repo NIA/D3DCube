@@ -46,7 +46,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
+				WarningLevel="4"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -120,7 +120,7 @@
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
+				WarningLevel="4"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -182,7 +182,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Model.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\shader.vsh"
+				>
+			</File>
+			<File
+				RelativePath=".\Vertex.cpp"
 				>
 			</File>
 			<File
@@ -208,7 +216,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Model.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Vertex.h"
 				>
 			</File>
 			<File
