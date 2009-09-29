@@ -1,7 +1,7 @@
 #include "Application.h"
 
 Application::Application() :
-    d3d(NULL), device(NULL), vertex_decl(NULL), shader(NULL), camera(0, 0, -1.0f)
+    d3d(NULL), device(NULL), vertex_decl(NULL), shader(NULL)
 {
     try
     {
