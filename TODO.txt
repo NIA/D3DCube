@@ -1,0 +1,3 @@
+* Classes-wrapers for interfaces
+* More result checking
+* Key handling without hook

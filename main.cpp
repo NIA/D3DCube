@@ -13,14 +13,14 @@ INT WINAPI wWinMain( HINSTANCE, HINSTANCE, LPWSTR, INT )
 
         Vertex cube_vertices[]=
         {
-            { -0.5f, -0.5f, -0.5f, D3DCOLOR_XRGB(  0,  0,  0), },
-            { -0.5f,  0.5f, -0.5f, D3DCOLOR_XRGB(  0,255,  0), },
-            {  0.5f,  0.5f, -0.5f, D3DCOLOR_XRGB(255,255,  0), },
-            {  0.5f, -0.5f, -0.5f, D3DCOLOR_XRGB(255,  0,  0), },
-            { -0.5f, -0.5f,  0.5f, D3DCOLOR_XRGB(  0,  0,255), },
-            { -0.5f,  0.5f,  0.5f, D3DCOLOR_XRGB(  0,255,255), },
-            {  0.5f,  0.5f,  0.5f, D3DCOLOR_XRGB(255,255,255), },
-            {  0.5f, -0.5f,  0.5f, D3DCOLOR_XRGB(255,  0,255), },
+            { -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(  0,  0,  0), },
+            { -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(  0,255,  0), },
+            {  1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,255,  0), },
+            {  1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255,  0,  0), },
+            { -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(  0,  0,255), },
+            { -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(  0,255,255), },
+            {  1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255,255,255), },
+            {  1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255,  0,255), },
         };
         DWORD cube_indices[] =
         {
@@ -39,18 +39,18 @@ INT WINAPI wWinMain( HINSTANCE, HINSTANCE, LPWSTR, INT )
             6, 7, 3,
             6, 2, 3,
 
-            0, 4, 5,
-            0, 4, 1,
+            0, 5, 4,
+            0, 5, 1,
         };
 
         Vertex triangles_vertices[] =
         {
-            {  0.5f, -0.5f, -0.5f, D3DCOLOR_XRGB(255,  0,  0), },
-            { -0.5f, -0.5f, -0.5f, D3DCOLOR_XRGB(  0,255,  0), },
-            {  0.0f,  0.5f,  0.5f, D3DCOLOR_XRGB(  0,  0,255), },
-            { -0.5f,  0.5f, -0.5f, D3DCOLOR_XRGB(  0,255,255), },
-            {  0.5f,  0.5f, -0.5f, D3DCOLOR_XRGB(255,  0,255), },
-            {  0.0f, -0.5f,  0.5f, D3DCOLOR_XRGB(255,255,  0), },
+            {  1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255,  0,  0), },
+            { -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(  0,255,  0), },
+            {  0.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(  0,  0,255), },
+            { -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(  0,255,255), },
+            {  1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,  0,255), },
+            {  0.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255,255,  0), },
         };
 
         DWORD triangles_indices[] =
@@ -76,7 +76,7 @@ INT WINAPI wWinMain( HINSTANCE, HINSTANCE, LPWSTR, INT )
                     ARR_SIZE(cube_indices),
                     ARR_SIZE(cube_indices)/3 );
         
-        app.add_model(triangles);
+        app.add_model(cube);
         app.run();
     }
     catch(RuntimeError &e)

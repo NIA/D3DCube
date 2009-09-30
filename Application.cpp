@@ -121,10 +121,10 @@ void Application::process_key(unsigned code)
         camera.move_down();
         break;
     case VK_LEFT:
-        camera.move_counterclockwise();
+        camera.move_clockwise();
         break;
     case VK_RIGHT:
-        camera.move_clockwise();
+        camera.move_counterclockwise();
         break;
     }
 }
