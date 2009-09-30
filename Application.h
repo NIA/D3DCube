@@ -30,10 +30,12 @@ private:
     void init_device();
     void init_shader();
 
-    // Deinitialization steps:
-    void release_interfaces();
+    void process_key(unsigned code);
 
     void render();
+
+    // Deinitialization steps:
+    void release_interfaces();
 
 public:
     Application();

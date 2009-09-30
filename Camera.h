@@ -26,7 +26,14 @@ public:
         set_up_direction(0,0,1);
     }
 
-    Camera() { set(2.0f, M_PI/2, M_PI/3, 0, 0, 0); };
+    void move_nearer();
+    void move_farther();
+    void move_up();
+    void move_down();
+    void move_clockwise();
+    void move_counterclockwise();
+
+    Camera() { set(2.0f, (float)M_PI/2, (float)M_PI/3, 0, 0, 0); };
     Camera(float rho, float theta, float phi) { set(rho,theta,phi,0,0,0); }
     Camera(float pos_rho, float pos_theta, float pos_phi, float at_x, float at_y, float at_z) { set(pos_rho,pos_theta,pos_phi,at_x,at_y,at_z); }
     void update_matrices();

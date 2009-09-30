@@ -101,6 +101,34 @@ void Application::remove_model(Model &model)
     models.remove( &model );
 }
 
+void Application::process_key(unsigned code)
+{
+    switch( code )
+    {
+    case VK_ESCAPE:
+        PostQuitMessage( 0 );
+        break;
+    case VK_UP:
+        camera.move_nearer();
+        break;
+    case VK_DOWN:
+        camera.move_farther();
+        break;
+    case VK_PRIOR:
+        camera.move_up();
+        break;
+    case VK_NEXT:
+        camera.move_down();
+        break;
+    case VK_LEFT:
+        camera.move_counterclockwise();
+        break;
+    case VK_RIGHT:
+        camera.move_clockwise();
+        break;
+    }
+}
+
 void Application::run()
 {
     window.show();
@@ -113,6 +141,11 @@ void Application::run()
     {
         if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
         {
+            if( msg.message == WM_KEYDOWN )
+            {
+                process_key( (unsigned) msg.wParam );
+            }
+
             TranslateMessage( &msg );
             DispatchMessage( &msg );
         }

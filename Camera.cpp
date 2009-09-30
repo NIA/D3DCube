@@ -1,15 +1,18 @@
 #include "Camera.h"
 
-const float NEAR_CLIP = 0.8f;
-const float FAR_CLIP = 1e10f;
-const float COEFF_A = FAR_CLIP / (FAR_CLIP - NEAR_CLIP);
-const float COEFF_B = - COEFF_A * NEAR_CLIP;
+static const float NEAR_CLIP = 0.8f;
+static const float FAR_CLIP = 1e10f;
+static const float COEFF_A = FAR_CLIP / (FAR_CLIP - NEAR_CLIP);
+static const float COEFF_B = - COEFF_A * NEAR_CLIP;
 
-const D3DXMATRIX PROJ_MX ( NEAR_CLIP,         0,       0,       0,
+static const D3DXMATRIX PROJ_MX ( NEAR_CLIP,         0,       0,       0,
                                     0, NEAR_CLIP,       0,       0,
                                     0,         0, COEFF_A, COEFF_B,
                                     0,         0,       1,       0 );
 
+static const float RHO_STEP = 0.1f;
+static const float THETA_STEP = (float)M_PI/20.0f;
+static const float PHI_STEP = (float)M_PI/20.0f;
 
 void Camera::set_position(float rho, float theta, float phi, bool update_mx)
 {
@@ -30,6 +33,37 @@ void Camera::set_up_direction(float x, float y, float z, bool update_mx)
     up = D3DXVECTOR3(x, y, z);
     if( update_mx )
         update_matrices();
+}
+
+void Camera::move_nearer()
+{
+    eye_spheric.x -= RHO_STEP;
+    update_matrices();
+}
+void Camera::move_farther()
+{
+    eye_spheric.x += RHO_STEP;
+    update_matrices();
+}
+void Camera::move_up()
+{
+    eye_spheric.y -= THETA_STEP;
+    update_matrices();
+}
+void Camera::move_down()
+{
+    eye_spheric.y += THETA_STEP;
+    update_matrices();
+}
+void Camera::move_clockwise()
+{
+    eye_spheric.z -= PHI_STEP;
+    update_matrices();
+}
+void Camera::move_counterclockwise()
+{
+    eye_spheric.z += PHI_STEP;
+    update_matrices();
 }
 
 static D3DXVECTOR3 spheric_to_cartesian( D3DXVECTOR3 spheric )
