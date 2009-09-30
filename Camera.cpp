@@ -11,9 +11,9 @@ const D3DXMATRIX PROJ_MX ( NEAR_CLIP,         0,       0,       0,
                                     0,         0,       1,       0 );
 
 
-void Camera::set_position(float x, float y, float z, bool update_mx)
+void Camera::set_position(float rho, float theta, float phi, bool update_mx)
 {
-    eye = D3DXVECTOR3(x, y, z);
+    eye_spheric = D3DXVECTOR3(rho, theta, phi);
     if( update_mx )
         update_matrices();
 }
@@ -32,8 +32,18 @@ void Camera::set_up_direction(float x, float y, float z, bool update_mx)
         update_matrices();
 }
 
+static D3DXVECTOR3 spheric_to_cartesian( D3DXVECTOR3 spheric )
+{
+    float rho = spheric.x;
+    float theta = spheric.y;
+    float phi = spheric.z;
+
+    return D3DXVECTOR3( rho*sin(theta)*cos(phi), rho*sin(theta)*sin(phi), rho*cos(theta) );
+}
+
 void Camera::update_matrices()
 {
+    D3DXVECTOR3 eye = spheric_to_cartesian( eye_spheric );
     D3DXVECTOR3 axis_z = at - eye;
     D3DXVECTOR3 axis_x, axis_y;
     D3DXVec3Cross( &axis_x, &up, &axis_z );
