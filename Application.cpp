@@ -108,21 +108,29 @@ void Application::process_key(unsigned code)
         PostQuitMessage( 0 );
         break;
     case VK_UP:
-        camera.move_nearer();
-        break;
-    case VK_DOWN:
-        camera.move_farther();
-        break;
-    case VK_PRIOR:
+    case 'W':
         camera.move_up();
         break;
-    case VK_NEXT:
+    case VK_DOWN:
+    case 'S':
         camera.move_down();
         break;
+    case VK_PRIOR:
+    case VK_ADD:
+    case VK_OEM_PLUS:
+        camera.move_nearer();
+        break;
+    case VK_NEXT:
+    case VK_SUBTRACT:
+    case VK_OEM_MINUS:
+        camera.move_farther();
+        break;
     case VK_LEFT:
+    case 'A':
         camera.move_clockwise();
         break;
     case VK_RIGHT:
+    case 'D':
         camera.move_counterclockwise();
         break;
     }
