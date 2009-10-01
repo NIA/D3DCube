@@ -1,5 +1,7 @@
 #include "Application.h"
 
+static const char * SHADER_FILE = "shader.vsh";
+
 Application::Application() :
     d3d(NULL), device(NULL), vertex_decl(NULL), shader(NULL)
 {
@@ -17,7 +19,8 @@ Application::Application() :
 
 void Application::init_device()
 {
-    if( NULL == ( d3d = Direct3DCreate9( D3D_SDK_VERSION ) ) )
+    d3d = Direct3DCreate9( D3D_SDK_VERSION );
+    if( d3d == NULL )
         throw D3DInitError();
 
     // Set up the structure used to create the device

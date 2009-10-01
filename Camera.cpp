@@ -11,18 +11,18 @@ static const D3DXMATRIX PROJ_MX ( NEAR_CLIP,         0,       0,       0,
                                           0,         0,       1,       0 );
 
 static const float RHO_STEP = 0.1f;
-static const float THETA_STEP = (float)M_PI/40.0f;
-static const float PHI_STEP = (float)M_PI/20.0f;
+static const float THETA_STEP = D3DX_PI/40.0f;
+static const float PHI_STEP = D3DX_PI/20.0f;
 
 static const float RHO_MIN = 1.74f + NEAR_CLIP; // Suppose models are inside the cube 1x1x1 => in sphere with radius sqrt(3) (approx. 1,74)
 static const float THETA_MIN = 0.01f;
 
 static const float RHO_MAX = FAR_CLIP;
-static const float THETA_MAX = (float)M_PI - 0.01f; // A little subtraction - to prevent looking parallel to the 'up' vector
+static const float THETA_MAX = D3DX_PI - 0.01f; // A little subtraction - to prevent looking parallel to the 'up' vector
 
 Camera::Camera()
 {
-    set(1.5*RHO_MIN, (float)M_PI/3.0f, (float)M_PI/3.0f, 0, 0, 0);
+    set(1.5f*RHO_MIN, D3DX_PI/3.0f, D3DX_PI/3.0f, 0, 0, 0);
 }
 
 void Camera::set_position(float rho, float theta, float phi, bool update_mx)

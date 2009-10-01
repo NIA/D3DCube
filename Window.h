@@ -2,8 +2,6 @@
 #include <windows.h>
 #include "main.h"
 
-#define WND_CLASS L"Cube"
-
 class Window
 {
 private:

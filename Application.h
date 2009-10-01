@@ -4,13 +4,12 @@
 #include "Window.h"
 #include "Vertex.h"
 #include "Model.h"
+
 #pragma warning( disable : 4996 ) // disable deprecated warning 
 #pragma warning( disable : 4995 ) // disable deprecated warning 
 #include <list>
 #pragma warning( default : 4996 ) // disable deprecated warning
 #pragma warning( default : 4995 ) // disable deprecated warning 
-
-#define SHADER_FILE "shader.vsh"
 
 class Application
 {

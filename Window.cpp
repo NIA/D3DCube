@@ -1,5 +1,8 @@
 #include "Window.h"
 
+const TCHAR *WND_CLASS = _T("Cube");
+const TCHAR *WND_TITLE = _T("Cube");
+
 Window::Window()
 {
     ZeroMemory( &wc, sizeof(wc) );
@@ -12,7 +15,7 @@ Window::Window()
 
     RegisterClassEx( &wc );
 
-    hwnd = CreateWindow( WND_CLASS, L"Cube",
+    hwnd = CreateWindow( WND_CLASS, WND_TITLE,
                            WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
                            NULL, NULL, wc.hInstance, NULL );
     if( hwnd == NULL )

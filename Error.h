@@ -1,20 +1,58 @@
 #pragma once
 #include <exception>
+#include <tchar.h>
 
-#define DECLARE_ERROR(Error, Base, msg) \
-    class Error : public Base \
-    { \
-    public: \
-        virtual const char *what() const { return msg; } \
-    }
+class RuntimeError : public std::exception
+{
+private:
+    const TCHAR * msg;
+public:
+    RuntimeError(const TCHAR *msg) :  msg(msg) {}
+    const TCHAR *message() const { return msg; }
+};
 
-DECLARE_ERROR(RuntimeError, std::exception, "Runtime Error!");
-DECLARE_ERROR(WindowInitError, RuntimeError, "Error while creating window");
-DECLARE_ERROR(D3DInitError, RuntimeError, "Error while initializing D3D device");
-DECLARE_ERROR(VertexDeclarationInitError, RuntimeError, "Error while creating vertex declaration");
-DECLARE_ERROR(VertexShaderAssemblyError, RuntimeError, "Error while assembling vertex shader");
-DECLARE_ERROR(VertexShaderInitError, RuntimeError, "Error while creating vertex shader");
-DECLARE_ERROR(VertexBufferInitError, RuntimeError, "Error while creating vertex buffer");
-DECLARE_ERROR(IndexBufferInitError, RuntimeError, "Error while creating index buffer");
-DECLARE_ERROR(VertexBufferFillError, RuntimeError, "Error while filling vertex buffer");
-DECLARE_ERROR(IndexBufferFillError, RuntimeError, "Error while filling index buffer");
+class WindowInitError : public RuntimeError
+{
+public:
+    WindowInitError() : RuntimeError( _T("Error while creating window") ) {}
+};
+class D3DInitError : public RuntimeError
+{
+public:
+    D3DInitError() : RuntimeError( _T("Error while initializing D3D device") ) {}
+};
+class VertexDeclarationInitError : public RuntimeError
+{
+public:
+    VertexDeclarationInitError() : RuntimeError( _T("Error while creating vertex declaration") ) {}
+};
+class VertexShaderAssemblyError : public RuntimeError
+{
+public:
+    VertexShaderAssemblyError() : RuntimeError( _T("Error while assembling vertex shader") ) {}
+};
+class VertexShaderInitError : public RuntimeError
+{
+public:
+    VertexShaderInitError() : RuntimeError( _T("Error while creating vertex shader") ) {}
+};
+class VertexBufferInitError : public RuntimeError
+{
+public:
+    VertexBufferInitError() : RuntimeError( _T("Error while creating vertex buffer") ) {}
+};
+class IndexBufferInitError : public RuntimeError
+{
+public:
+    IndexBufferInitError() : RuntimeError( _T("Error while creating index buffer") ) {}
+};
+class VertexBufferFillError : public RuntimeError
+{
+public:
+    VertexBufferFillError() : RuntimeError( _T("Error while filling vertex buffer") ) {}
+};
+class IndexBufferFillError : public RuntimeError
+{
+public:
+    IndexBufferFillError() : RuntimeError( _T("Error while filling index buffer") ) {}
+};

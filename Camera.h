@@ -1,10 +1,6 @@
 #pragma once
 #include "main.h"
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-
-
 class Camera
 {
 private:
