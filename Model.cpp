@@ -43,9 +43,9 @@ Model::Model(   IDirect3DDevice9 *device, D3DPRIMITIVETYPE primitive_type, const
 
 void Model::draw() const
 {
-    device->SetStreamSource( 0, vertex_buffer, 0, sizeof(Vertex) );
-    device->SetIndices( index_buffer );
-    device->DrawIndexedPrimitive( primitive_type , 0, 0, vertices_count, 0, primitives_count );
+    check_render( device->SetStreamSource( 0, vertex_buffer, 0, sizeof(Vertex) ) );
+    check_render( device->SetIndices( index_buffer ) );
+    check_render( device->DrawIndexedPrimitive( primitive_type , 0, 0, vertices_count, 0, primitives_count ) );
 }
 
 void Model::release_interfaces()

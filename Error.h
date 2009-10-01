@@ -56,3 +56,25 @@ class IndexBufferFillError : public RuntimeError
 public:
     IndexBufferFillError() : RuntimeError( _T("Error while filling index buffer") ) {}
 };
+class RenderError : public RuntimeError
+{
+public:
+    RenderError() : RuntimeError( _T("Error while rendering scene") ) {}
+};
+class RenderStateError : public RuntimeError
+{
+public:
+    RenderStateError() : RuntimeError( _T("Error while setting render state") ) {}
+};
+
+inline void check_render( HRESULT res )
+{
+    if( FAILED(res) )
+        throw RenderError();
+}
+
+inline void check_state( HRESULT res )
+{
+    if( FAILED(res) )
+        throw RenderStateError();
+}

@@ -1,3 +1,2 @@
-* More result checking
-* Key handling without hook
 * Division by zero checking
+* No-limit vertical rotation (?)

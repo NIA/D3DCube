@@ -39,7 +39,7 @@ void Application::init_device()
                                       &present_parameters, &device ) ) )
         throw D3DInitError();
     
-    device->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+    check_state( device->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE ) );
 }
 
 void Application::init_shader()
@@ -66,28 +66,22 @@ void Application::init_shader()
 
 void Application::render()
 {
-    device->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, BACKGROUND_COLOR, 1.0f, 0 );
-
+    check_render( device->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, BACKGROUND_COLOR, 1.0f, 0 ) );
+    
     // Begin the scene
-    if( SUCCEEDED( device->BeginScene() ) )
-    {
-        device->SetVertexDeclaration(vertex_decl);
-        device->SetVertexShader(shader);
-        device->SetVertexShaderConstantF(0, camera.get_matrix(), sizeof(D3DXMATRIX)/sizeof(D3DXVECTOR4));
-
-        for ( std::list<Model*>::iterator iter = models.begin(); iter != models.end(); iter++ )
-            (*iter)->draw();
-
-        // End the scene
-        device->EndScene();
-    }
-    else
-    {
-        /* throw ...; */
-    }
-
+    check_render( device->BeginScene() );
+    // Setup
+    check_render( device->SetVertexDeclaration(vertex_decl) );
+    check_render( device->SetVertexShader(shader) );
+    check_render( device->SetVertexShaderConstantF(0, camera.get_matrix(), sizeof(D3DXMATRIX)/sizeof(D3DXVECTOR4)) );
+    // Draw
+    for ( std::list<Model*>::iterator iter = models.begin(); iter != models.end(); iter++ )
+        (*iter)->draw();
+    // End the scene
+    check_render( device->EndScene() );
+    
     // Present the backbuffer contents to the display
-    device->Present( NULL, NULL, NULL, NULL );
+    check_render( device->Present( NULL, NULL, NULL, NULL ) );
 
 }
 
