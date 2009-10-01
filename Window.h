@@ -10,7 +10,7 @@ private:
 
     void unregister_class();
 public:
-    Window();
+    Window(int width, int height);
     void show();
     void update();
     static LRESULT WINAPI MsgProc( HWND, UINT, WPARAM, LPARAM );

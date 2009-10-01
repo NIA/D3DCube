@@ -20,9 +20,11 @@ static const float THETA_MIN = 0.01f;
 static const float RHO_MAX = FAR_CLIP;
 static const float THETA_MAX = D3DX_PI - 0.01f; // A little subtraction - to prevent looking parallel to the 'up' vector
 
+static const D3DXVECTOR3 DEFAULT_POSITION(1.5f*RHO_MIN, D3DX_PI/3.0f, D3DX_PI/3.0f);
+
 Camera::Camera()
 {
-    set(1.5f*RHO_MIN, D3DX_PI/3.0f, D3DX_PI/3.0f, 0, 0, 0);
+    set(DEFAULT_POSITION.x, DEFAULT_POSITION.y, DEFAULT_POSITION.z, 0, 0, 0);
 }
 
 void Camera::set_position(float rho, float theta, float phi, bool update_mx)

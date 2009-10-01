@@ -1,9 +1,11 @@
 #include "Application.h"
 
 static const char * SHADER_FILE = "shader.vsh";
+static const int WINDOW_SIZE = 600;
+static const D3DCOLOR BACKGROUND_COLOR = D3DCOLOR_XRGB( 64, 64, 74 );
 
 Application::Application() :
-    d3d(NULL), device(NULL), vertex_decl(NULL), shader(NULL)
+    d3d(NULL), device(NULL), vertex_decl(NULL), shader(NULL), window(WINDOW_SIZE, WINDOW_SIZE)
 {
     try
     {
@@ -64,14 +66,14 @@ void Application::init_shader()
 
 void Application::render()
 {
-    device->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 128, 128, 128 ), 1.0f, 0 );
+    device->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, BACKGROUND_COLOR, 1.0f, 0 );
 
     // Begin the scene
     if( SUCCEEDED( device->BeginScene() ) )
     {
         device->SetVertexDeclaration(vertex_decl);
         device->SetVertexShader(shader);
-        device->SetVertexShaderConstantF(0, camera.get_matrix(), 4);
+        device->SetVertexShaderConstantF(0, camera.get_matrix(), sizeof(D3DXMATRIX)/sizeof(D3DXVECTOR4));
 
         for ( std::list<Model*>::iterator iter = models.begin(); iter != models.end(); iter++ )
             (*iter)->draw();

@@ -1,9 +1,9 @@
 #include "Window.h"
 
-const TCHAR *WND_CLASS = _T("Cube");
-const TCHAR *WND_TITLE = _T("Cube");
+const TCHAR *WINDOW_CLASS = _T("Cube");
+const TCHAR *WINDOW_TITLE = _T("Cube");
 
-Window::Window()
+Window::Window(int width, int height)
 {
     ZeroMemory( &wc, sizeof(wc) );
 
@@ -11,13 +11,13 @@ Window::Window()
     wc.style = CS_CLASSDC;
     wc.lpfnWndProc = Window::MsgProc;
     wc.hInstance = GetModuleHandle( NULL );
-    wc.lpszClassName = WND_CLASS;
+    wc.lpszClassName = WINDOW_CLASS;
 
     RegisterClassEx( &wc );
 
-    hwnd = CreateWindow( WND_CLASS, WND_TITLE,
-                           WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
-                           NULL, NULL, wc.hInstance, NULL );
+    hwnd = CreateWindow( WINDOW_CLASS, WINDOW_TITLE,
+                         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+                         NULL, NULL, wc.hInstance, NULL );
     if( hwnd == NULL )
     {
         unregister_class();
@@ -25,7 +25,7 @@ Window::Window()
     }
 }
 
-LRESULT WINAPI Window::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+LRESULT WINAPI Window::MsgProc( HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam )
 {
     switch( msg )
     {
@@ -34,7 +34,7 @@ LRESULT WINAPI Window::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
             return 0;
     }
 
-    return DefWindowProc( hWnd, msg, wParam, lParam );
+    return DefWindowProc( hwnd, msg, wparam, lparam );
 }
 
 void Window::show()
@@ -49,7 +49,7 @@ void Window::update()
 
 void Window::unregister_class()
 {
-    UnregisterClass( WND_CLASS, wc.hInstance );
+    UnregisterClass( WINDOW_CLASS, wc.hInstance );
 }
 
 Window::~Window()

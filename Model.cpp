@@ -1,65 +1,21 @@
 #include "Model.h"
 
-Model::Model(   IDirect3DDevice9 *device,
-                D3DPRIMITIVETYPE primitive_type,
-                Vertex *vertices,
-                unsigned vertices_count,
-                WORD *indices,
-                unsigned indices_count,
-                unsigned primitives_count )
+Model::Model(   IDirect3DDevice9 *device, D3DPRIMITIVETYPE primitive_type, Vertex *vertices,
+                unsigned vertices_count, WORD *indices, unsigned indices_count, unsigned primitives_count )
 
-    :   device(device),
-        vertices_count(vertices_count),
-        primitives_count(primitives_count),
-        primitive_type(primitive_type),
-        vertex_buffer(NULL),
-        index_buffer(NULL)
-{
-    init_buffers(   vertices,
-                    vertices_count*sizeof(Vertex),
-                    D3DFMT_INDEX16,
-                    indices,
-                    indices_count*sizeof(WORD) );
-}
-
-Model::Model(   IDirect3DDevice9 *device,
-                D3DPRIMITIVETYPE primitive_type,
-                Vertex *vertices,
-                unsigned vertices_count,
-                DWORD *indices,
-                unsigned indices_count,
-                unsigned primitives_count )
-
-    :   device(device),
-        vertices_count(vertices_count),
-        primitives_count(primitives_count),
-        primitive_type(primitive_type),
-        vertex_buffer(NULL),
-        index_buffer(NULL)
-{
-    init_buffers(   vertices,
-                    vertices_count*sizeof(Vertex),
-                    D3DFMT_INDEX32,
-                    indices,
-                    indices_count*sizeof(DWORD) );
-}
-
-
-void Model::init_buffers(   Vertex *vertices,
-                            unsigned vertices_size,
-                            D3DFORMAT index_format,
-                            void *indices,
-                            unsigned indices_size )
+: device(device), vertices_count(vertices_count), primitives_count(primitives_count),
+  primitive_type(primitive_type), vertex_buffer(NULL), index_buffer(NULL)
 {
     try
     {
-        if(FAILED( device->CreateVertexBuffer(  vertices_size, 0, 0,
-                                                D3DPOOL_DEFAULT, &vertex_buffer, NULL ) ))
+        unsigned vertices_size = vertices_count*sizeof(vertices[0]);
+        unsigned indices_size = indices_count*sizeof(indices[0]);
+
+        if(FAILED( device->CreateVertexBuffer( vertices_size, 0, 0, D3DPOOL_DEFAULT, &vertex_buffer, NULL ) ))
             throw VertexBufferInitError();
         
 
-        if(FAILED( device->CreateIndexBuffer(   indices_size, 0, index_format,
-                                                D3DPOOL_DEFAULT, &index_buffer, NULL ) ))
+        if(FAILED( device->CreateIndexBuffer( indices_size, 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &index_buffer, NULL ) ))
             throw IndexBufferInitError();
                     
 

@@ -18,7 +18,7 @@ INT WINAPI wWinMain( HINSTANCE, HINSTANCE, LPWSTR, INT )
             {  1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255,255,255), },
             {  1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255,  0,255), },
         };
-        DWORD cube_indices[] =
+        WORD cube_indices[] =
         {
             0, 1, 2,
             0, 3, 2,
@@ -54,7 +54,8 @@ INT WINAPI wWinMain( HINSTANCE, HINSTANCE, LPWSTR, INT )
     }
     catch(RuntimeError &e)
     {
-        MessageBox(NULL, e.message(), _T("Error!"), MB_OK | MB_ICONERROR);
+        const TCHAR *MESSAGE_BOX_TITLE = _T("Cube error!");
+        MessageBox(NULL, e.message(), MESSAGE_BOX_TITLE, MB_OK | MB_ICONERROR);
         return -1;
     }
     return 0;
