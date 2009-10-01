@@ -42,5 +42,5 @@ public:
     Camera(float pos_rho, float pos_theta, float pos_phi, float at_x, float at_y, float at_z) { set(pos_rho,pos_theta,pos_phi,at_x,at_y,at_z); }
     void update_matrices();
 
-    D3DXMATRIX get_matrix();
+    D3DXMATRIX get_matrix() const;
 };

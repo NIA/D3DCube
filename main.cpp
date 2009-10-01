@@ -7,7 +7,7 @@ INT WINAPI wWinMain( HINSTANCE, HINSTANCE, LPWSTR, INT )
     {
         Application app;
 
-        Vertex cube_vertices[]=
+        const Vertex cube_vertices[]=
         {
             { -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(  0,  0,  0), },
             { -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(  0,255,  0), },
@@ -18,7 +18,7 @@ INT WINAPI wWinMain( HINSTANCE, HINSTANCE, LPWSTR, INT )
             {  1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255,255,255), },
             {  1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255,  0,255), },
         };
-        WORD cube_indices[] =
+        const WORD cube_indices[] =
         {
             0, 1, 2,
             0, 3, 2,

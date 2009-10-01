@@ -1,15 +1,16 @@
 #include "Model.h"
 
-Model::Model(   IDirect3DDevice9 *device, D3DPRIMITIVETYPE primitive_type, Vertex *vertices,
-                unsigned vertices_count, WORD *indices, unsigned indices_count, unsigned primitives_count )
+Model::Model(   IDirect3DDevice9 *device, D3DPRIMITIVETYPE primitive_type, const Vertex *vertices,
+                unsigned vertices_count, const WORD *indices, unsigned indices_count,
+                unsigned primitives_count )
 
 : device(device), vertices_count(vertices_count), primitives_count(primitives_count),
   primitive_type(primitive_type), vertex_buffer(NULL), index_buffer(NULL)
 {
     try
     {
-        unsigned vertices_size = vertices_count*sizeof(vertices[0]);
-        unsigned indices_size = indices_count*sizeof(indices[0]);
+        const unsigned vertices_size = vertices_count*sizeof(vertices[0]);
+        const unsigned indices_size = indices_count*sizeof(indices[0]);
 
         if(FAILED( device->CreateVertexBuffer( vertices_size, 0, 0, D3DPOOL_DEFAULT, &vertex_buffer, NULL ) ))
             throw VertexBufferInitError();
@@ -40,7 +41,7 @@ Model::Model(   IDirect3DDevice9 *device, D3DPRIMITIVETYPE primitive_type, Verte
     }
 }
 
-void Model::draw()
+void Model::draw() const
 {
     device->SetStreamSource( 0, vertex_buffer, 0, sizeof(Vertex) );
     device->SetIndices( index_buffer );

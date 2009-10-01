@@ -12,7 +12,7 @@ static const D3DXMATRIX PROJ_MX ( NEAR_CLIP,         0,       0,       0,
 
 static const float RHO_STEP = 0.1f;
 static const float THETA_STEP = D3DX_PI/40.0f;
-static const float PHI_STEP = D3DX_PI/20.0f;
+static const float PHI_STEP = D3DX_PI/30.0f;
 
 static const float RHO_MIN = 1.74f + NEAR_CLIP; // Suppose models are inside the cube 1x1x1 => in sphere with radius sqrt(3) (approx. 1,74)
 static const float THETA_MIN = 0.01f;
@@ -146,7 +146,7 @@ void Camera::update_matrices()
     mx = PROJ_MX * view_mx;
 }
 
-D3DXMATRIX Camera::get_matrix()
+D3DXMATRIX Camera::get_matrix() const
 {
     return mx;
 }

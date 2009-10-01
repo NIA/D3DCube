@@ -5,19 +5,19 @@ const TCHAR *WINDOW_TITLE = _T("Cube");
 
 Window::Window(int width, int height)
 {
-    ZeroMemory( &wc, sizeof(wc) );
+    ZeroMemory( &window_class, sizeof(window_class) );
 
-    wc.cbSize = sizeof( WNDCLASSEX );
-    wc.style = CS_CLASSDC;
-    wc.lpfnWndProc = Window::MsgProc;
-    wc.hInstance = GetModuleHandle( NULL );
-    wc.lpszClassName = WINDOW_CLASS;
+    window_class.cbSize = sizeof( WNDCLASSEX );
+    window_class.style = CS_CLASSDC;
+    window_class.lpfnWndProc = Window::MsgProc;
+    window_class.hInstance = GetModuleHandle( NULL );
+    window_class.lpszClassName = WINDOW_CLASS;
 
-    RegisterClassEx( &wc );
+    RegisterClassEx( &window_class );
 
     hwnd = CreateWindow( WINDOW_CLASS, WINDOW_TITLE,
                          WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height,
-                         NULL, NULL, wc.hInstance, NULL );
+                         NULL, NULL, window_class.hInstance, NULL );
     if( hwnd == NULL )
     {
         unregister_class();
@@ -37,19 +37,19 @@ LRESULT WINAPI Window::MsgProc( HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
     return DefWindowProc( hwnd, msg, wparam, lparam );
 }
 
-void Window::show()
+void Window::show() const
 {
     ShowWindow( *this, SW_SHOWDEFAULT );
 }
 
-void Window::update()
+void Window::update() const
 {
     UpdateWindow( *this );
 }
 
 void Window::unregister_class()
 {
-    UnregisterClass( WINDOW_CLASS, wc.hInstance );
+    UnregisterClass( WINDOW_CLASS, window_class.hInstance );
 }
 
 Window::~Window()

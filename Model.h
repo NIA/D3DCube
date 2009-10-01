@@ -19,13 +19,13 @@ private:
 public:
     Model(  IDirect3DDevice9 *device,
             D3DPRIMITIVETYPE primitive_type,
-            Vertex *vertices,
+            const Vertex *vertices,
             unsigned vertices_count,
-            WORD *indices,
+            const WORD *indices,
             unsigned indices_count,
             unsigned primitives_count );
     
-    virtual void draw();
+    virtual void draw() const;
 
     virtual ~Model();
 };

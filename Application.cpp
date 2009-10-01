@@ -148,7 +148,7 @@ void Application::run()
         {
             if( msg.message == WM_KEYDOWN )
             {
-                process_key( (unsigned) msg.wParam );
+                process_key( static_cast<unsigned>( msg.wParam ) );
             }
 
             TranslateMessage( &msg );
